@@ -1,5 +1,6 @@
 ﻿namespace TwitterHttpClientSampleConsole
 {
+    using System;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Threading;
@@ -31,6 +32,9 @@
             string normalizedUri;
             string normalizedParameters;
 
+            string timeStamp = this.oauthBase.GenerateTimeStamp();
+            string nonce = this.oauthBase.GenerateNonce();
+
             string signature = this.oauthBase.GenerateSignature(
                 request.RequestUri,
                 consumerKey,
@@ -38,15 +42,35 @@
                 token,
                 tokenSecret,
                 request.Method.Method,
-                this.oauthBase.GenerateTimeStamp(),
-                this.oauthBase.GenerateNonce(),
+                timeStamp,
+                nonce,
                 out normalizedUri,
                 out normalizedParameters);
 
-            var authHeader = string.Empty;
+            var authHeader = GenerateAuthHeader(consumerKey, token, timeStamp, nonce, signature, request.Method.Method);
 
             request.Headers.Authorization = new AuthenticationHeaderValue("OAuth", authHeader);
             return base.SendAsync(request, cancellationToken);
+        }
+
+        private static string GenerateAuthHeader(string consumerKey, string token, string timeStamp, string nonce, string signature, string signatureMethod)
+        {
+            string authHeader;
+            authHeader = string.Format(
+                "oauth_consumer_key=\"{0}\", oauth_nonce=\"{1}\", oauth_signature=\"{2}\", oauth_signature_method=\"{3}\", oauth_timestamp=\"{4}\", oauth_version=\"{5}\"",
+                consumerKey,
+                nonce,
+                Uri.EscapeDataString(signature),
+                signatureMethod,
+                timeStamp,
+                OAuthBase.OAuthVersion);
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return authHeader;
+            }
+
+            return authHeader + string.Format(", oauth_token=\"{0}\"", token);
         }
     }
 }

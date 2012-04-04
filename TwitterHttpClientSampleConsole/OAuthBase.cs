@@ -8,7 +8,7 @@
 
     public class OAuthBase
     {
-        protected const string OAuthVersion = "1.0";
+        internal const string OAuthVersion = "1.0";
         protected const string OAuthParameterPrefix = "oauth_";
 
         /*
