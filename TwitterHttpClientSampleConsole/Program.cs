@@ -9,18 +9,18 @@
     /// HttpMessageHandler to insert the appropriate OAuth authentication information into the outgoing
     /// HttpRequestMessage. The result from twitter is read using JsonValue.
     /// </summary>
-    class Program
+    public static class Program
     {
-        static string _address = "http://api.twitter.com/1/statuses/user_timeline.json?include_entities=true&include_rts=true&screen_name=scottgu&count=5";
+        private static string address = "http://api.twitter.com/1/statuses/user_timeline.json?include_entities=true&include_rts=true&screen_name=scottgu&count=5";
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             // Create client and insert an OAuth message handler in the message path that 
             // inserts an OAuth authentication header in the request
             HttpClient client = new HttpClient(new OAuthMessageHandler(new HttpClientHandler()));
 
             // Send asynchronous request to twitter
-            client.GetAsync(_address).ContinueWith(
+            client.GetAsync(address).ContinueWith(
                 (requestTask) =>
                 {
                     // Get HTTP response from completed task.

@@ -13,12 +13,12 @@
     public class OAuthMessageHandler : DelegatingHandler
     {
         // Obtain these values by creating a Twitter app at http://dev.twitter.com/
-        private static string _consumerKey = "Enter your consumer key";
-        private static string _consumerSecret = "Enter your consumer secret";
-        private static string _token = "Enter your token";
-        private static string _tokenSecret = "Enter your token secret";
+        private static string consumerKey = "Enter your consumer key";
+        private static string consumerSecret = "Enter your consumer secret";
+        private static string token = "Enter your token";
+        private static string tokenSecret = "Enter your token secret";
 
-        private OAuthBase _oAuthBase = new OAuthBase();
+        private OAuthBase oauthBase = new OAuthBase();
 
         public OAuthMessageHandler(HttpMessageHandler innerHandler)
             : base(innerHandler)
@@ -31,15 +31,15 @@
             string normalizedUri;
             string normalizedParameters;
 
-            string signature = _oAuthBase.GenerateSignature(
+            string signature = this.oauthBase.GenerateSignature(
                 request.RequestUri,
-                _consumerKey,
-                _consumerSecret,
-                _token,
-                _tokenSecret,
+                consumerKey,
+                consumerSecret,
+                token,
+                tokenSecret,
                 request.Method.Method,
-                _oAuthBase.GenerateTimeStamp(),
-                _oAuthBase.GenerateNonce(),
+                this.oauthBase.GenerateTimeStamp(),
+                this.oauthBase.GenerateNonce(),
                 out normalizedUri,
                 out normalizedParameters);
 
